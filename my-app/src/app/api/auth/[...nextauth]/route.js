@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import connect from "@/utils/db";
 
 const handler = NextAuth({
   providers: [
@@ -17,7 +18,7 @@ const handler = NextAuth({
         await connect();
 
         try {
-          const user = User.findOne({
+          const user = await User.findOne({
             email: credentials.email,
           });
 
@@ -42,6 +43,9 @@ const handler = NextAuth({
       },
     }),
   ],
+  pages: {
+    error: "/dashboard/login",
+  },
 });
 
 export { handler as GET, handler as POST };
